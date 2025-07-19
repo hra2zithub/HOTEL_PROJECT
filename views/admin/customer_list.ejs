@@ -1,0 +1,47 @@
+<%-include('nav.ejs')%>
+
+<div class="container-fluid bg-white p3">
+    <div class="row">
+        <div class="col-md-12 mb-5 text-center mt-2">
+            <h2>Customer List</h2>
+        </div>
+        <div class="col-md-12 mb-3">
+            <table class="table table-bordered">
+                <tr class="bg-warning">
+                    <th>Action</th>
+                    <th>SN</th>
+                    <th>Name</th>
+                    <th>Mobile</th>
+                    <th>Address</th>
+                    <th>Due Payment</th>
+                </tr>
+                <%
+                for(i=0;i<cust_list.length;i++)
+                { 
+                    %>
+                    <tr>
+                        <td>
+                            <a href="edit_customer?id=<%=cust_list[i].customer_id%>">
+                             <button class="btn btn-success"><i class="fa fa-edit"></i></button>
+                            </a>
+                            <a href="delete_customer?id=<%=cust_list[i].customer_id%>">
+                               <button class="btn btn-danger"><i class="fa fa-trash"></i></button>
+                            </a>
+                        </td>
+                        <td><%=i+1%></td>
+                        <td><%=cust_list[i].customer_name%></td>
+                        <td><%=cust_list[i].customer_mobile%></td>
+                        <td><%=cust_list[i].customer_address%></td>
+                        <td><%=cust_list[i].due_payment%></td>
+                    </tr>
+                    <%
+                }
+                %>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+<%-include('footer.ejs')%>

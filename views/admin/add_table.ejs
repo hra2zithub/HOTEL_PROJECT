@@ -1,0 +1,52 @@
+<%-include('nav.ejs')%>
+<form action="/admin/savetable" method="post" enctype="multipart/form-data">
+    <div class="container-fluid p-4">
+        <div class="row border bg-white">
+            <div class="col-md-12">
+                <h3 class="fw-bold p-3">Add New Table</h3>
+            </div>
+            <div class="col-12 mb-3">
+                <b>Enter table Name</b>
+                <input type="text" name="table_name" class="form-control">
+            </div>
+            <div class="col-12 mb-3 text-end">
+                <button class="btn btn-primary">SAVE TABLE</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<div class="container-fluid bg-white p-4">
+    <h3 class="p-3 fw-bold text-center">Table List</h3>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-bordered">
+                <tr class="bg-warning">
+                    <th>Action</th>
+                    <th>SN</th>
+                    <th>Table Name</th>
+                    <th>Status</th>
+                </tr>
+                <% for(i=0;i<table_list.length;i++) { %>
+                <tr>
+                    <th><a href="edit_table?id=<%=table_list[i].hotel_table_id%>">
+                            <button class="btn btn-success"><i class="fa fa-edit"></i></button>
+                        </a>
+                        <a href="delete_table?id=<%=table_list[i].hotel_table_id%>">
+                            <button class="btn btn-danger"><i class="fa fa-trash"></i></button>
+                        </a>
+                        </th>
+                    <th><%=i+1%></th>
+                    <th><%=table_list[i].table_name%></th>
+                    <th><%=table_list[i].status%></th>
+                </tr> 
+                <%   
+                }
+                %>
+            </table>
+        </div>
+    </div>
+</div>
+
+<%-include('footer.ejs')%>

@@ -1,0 +1,34 @@
+<%-include('nav.ejs')%>
+
+<div class="container-fluid bg-white p-3">
+    <div class="row">
+        <div class="col-12 mb-3">
+            <h3 class="p-3" style="font-weight: bold;">SELECT TABLE TO ORDER</h3>
+        </div>
+        <% for(i=0;i<tables.length;i++) { %>
+        <div class="col-md-3 mb-3">
+            <div class="<%=(tables[i].status=='free')?'bg-success':'bg-danger'%> p-3 text-center text-white">
+            <h3><%=tables[i].table_name%></h3>
+            <a href="/admin/create_order2/<%=tables[i].hotel_table_id%>">
+                <%
+                if(tables[i].status=='free')
+                {
+                %>
+                <button class="btn btn-light">Book Now</button>
+                <%
+                }
+                else
+                {
+                    %>
+                <button class="btn btn-light ">Booked</button>
+                <%
+                }
+                %>
+            </a>
+        </div>
+        </div>
+     <% } %>
+    </div>
+ </div>
+
+<%-include('footer.ejs')%>

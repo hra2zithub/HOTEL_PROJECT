@@ -1,0 +1,22 @@
+<%-include('nav.ejs')%>
+
+<form action="/admin/edit_category" class="p-5" method="post">
+    
+    <div class="container-fluid bg-white p-5 border">
+        <div class="row">
+            <div class="col-12">
+                <h1>Edit Category</h1>
+            </div>
+            <div class="col-md-6">
+                <label>Rename Category</label>
+                <input type="hidden" name="category_id" value="<%=cat_list[0].category_id%>">
+                <input type="text" class="form-control" name="category_name" value="<%=cat_list[0].category_name%>">
+            </div>
+            <div class="col-md-6"><br>
+                <button class="btn btn-primary float-end">Save Category</button>
+            </div>
+    </div>
+    </div>
+</form>
+
+<%-include('footer.ejs')%>

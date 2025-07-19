@@ -1,0 +1,48 @@
+<%-include('nav.ejs')%>
+
+<form action="/admin/savecategory" method="post"> 
+    <div class="container-fluid bg-white p-5">
+        <h3 class="fw-bold p-3">Add New Category</h3>
+        <div class="row border">
+            <div class="col-md-6 p-4">
+                <br>
+                <label>Enter Category Name</label>
+                <input type="text" class="form-control" name="category_name">        
+            </div>
+            <div class="col-md-6 text-end"><br><br><br>
+                <button class="btn btn-primary">Save Category</button>
+            </div>
+        </div>
+    </div>
+</form>
+<br>
+<br>
+<div class="container-fluid bg-white p-4">
+    <h3 class="p-3 fw-bold">Category List</h3>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-bordered">
+                <tr>
+                    <th>Action</th>
+                    <th>SN</th>
+                    <th>Category Name</th>
+                </tr>
+                    <% for (i=0;i<cat_list.length;i++) { %>
+                <tr>
+                    <th>
+                        <a href="edit_category?id=<%=cat_list[i].category_id%>">
+                            <button class="btn btn-success"><i class="fa fa-edit"></i></button>
+                        </a>
+                        <a href="delete_category?id=<%=cat_list[i].category_id%>">
+                        <button class="btn btn-danger"><i class="fa fa-trash"></i></button>
+                        </a>
+                    </th>
+                    <th><%=i+1%></th>
+                    <th><%=cat_list[i].category_name%></th>
+                </tr>
+                <% } %>
+            </table>
+        </div>
+    </div>
+</div>
+<%-include('footer.ejs')%>

@@ -1,0 +1,46 @@
+<%-include('nav.ejs')%>
+
+<div class="container-fluid bg-white p-3">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h2 class="p-3">Dish List</h2>
+        </div>
+        <div class="col-md-12 mb-3">
+            <table class="table table-bordered">
+                <tr class="bg-warning">
+                    <th>Action</th>
+                    <th>Sr.No</th>
+                    <th>Category</th>
+                    <th>Dish</th>
+                    <th>Price</th>
+                </tr>
+                <%
+                for(i=0;i<dishes.length;i++)
+                { 
+                    %>
+                    <tr>
+                        <td>
+                            <a href="edit_dish?id=<%=dishes[i].dish_id%>">
+                            <button class="btn btn-success"><i class="fa fa-edit"></i></button>
+                            </a>
+
+                            <a href="delete_dish?id=<%=dishes[i].dish_id%>">
+                            <button class="btn btn-danger"><i class="fa fa-trash"></i></button>
+                            </a>
+                        </td>
+                        <td><%=i+1%></td>
+                        <td><%=dishes[i].category_name%></td>
+                        <td><%=dishes[i].dish_name%></td>
+                        <td> &#8377; <%=dishes[i].dish_price%> /-</td>
+                    </tr>
+                    <%
+                }
+                %>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+<%-include('footer.ejs')%>

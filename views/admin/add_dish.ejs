@@ -1,0 +1,44 @@
+<%-include('nav.ejs')%>
+<form action="/admin/savedish" method="post" enctype="multipart/form-data">
+    <div class="container-fluid bg-white p-4">
+        <div class="row">
+            <div class="col-md-12">
+                <h3 class=" p-3">Add New Dish</h3>
+            </div>
+            <div class="col-md-4 mt-3">
+                <b>Select Category</b>                      
+                <select class="form-control" name="category_id"> 
+                    <%
+                    for(i=0;i<cat_list.length;i++)
+                    { 
+                    %>
+                    <option value="<%=cat_list[i].category_id%>"><%=cat_list[i].category_name%></option>
+                    <%
+                    }
+                    %>
+                </select>
+            </div>
+            <div class="col-md-4 mt-3">
+                <b>Enter Dish Name</b>
+                <input type="text" name="dish_name" class="form-control">
+            </div>
+            <div class="col-md-4 mt-3">
+                <b>Enter Dish Price</b>
+                <input type="number" name="dish_price" class="form-control">
+            </div>
+            <div class="col-md-4 mt-3">
+                <b>Enter Image</b>
+                <input type="file" name="dish_image" class="form-control">
+            </div>
+            <div class="col-md-8 mt-3">
+                <b>Enter Details</b>
+                <textarea name="dish_details" class="form-control"></textarea>
+            </div>
+            <div class="col-12 mt-3 text-end">
+                <button class="btn btn-primary">SAVE DISH</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<%-include('footer.ejs')%>

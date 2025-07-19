@@ -1,0 +1,257 @@
+<%-include('nav.ejs')%>
+<!-- order table -->
+<form action="/admin/saveorder" method="post" onsubmit="submitform(event,this)">
+    <input type="hidden" value="<%=table_info[0]['hotel_table_id']%>" name="hotel_table_id" id="hotel_table_id">
+    <div class="container-fluid bg-white p-3">
+        <div class="row">
+            <div class="col-md-12 mb-3">
+                <h3><b><%=table_info[0].table_name%> IS SELECTED
+                  <button class="btn btn-danger float-end" style="font-weight:bold;" type="button" data-coreui-toggle="modal" 
+                  data-coreui-target="#exampleModalLong" onclick="setFocus(paid_amt)">Close & Print</button>
+                </b></h3>
+            </div>
+            <div class="col-md-12">
+                <table class="table-sm table-bordered table">
+                    <thead>
+                        <tr>
+                            <th>Dish</th>
+                            <th>Rate</th>
+                            <th>Qty</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <thead>
+                        <tr>
+                            <th>
+                                <!-- <input type="text" class="form-control" id="dish_name" placeholder="Enter Dish Name"> -->
+                            <select class="form-control" id="dish_id" onchange="get_dish_rate(this)" name="dish_id" required>
+                                <option selected disabled value="">Select Dish</option>
+                                <% for(i=0;i<dish_list.length;i++) { %>
+                                <option value="<%=dish_list[i].dish_id%>"><%=dish_list[i].dish_name%></option>
+                                <% } %>
+                            </select>
+                            </th>
+                            <th>
+                                <input type="number" class="form-control" id="dish_rate" placeholder="Enter Dish Rate" onkeyup="getTotal()" name="dish_rate" required>
+                            </th>
+                            <th>
+                                <input type="number" class="form-control" id="dish_qty" placeholder="Enter Dish Qty" onkeyup="getTotal()" name="dish_qty" required>
+                            </th>
+                            <th>
+                                <input type="number" class="form-control" id="dish_total" readonly name="dish_total" required>
+                            </th>
+                            <th>
+                                <button class="btn btn-primary"><i class="fa fa-plus"></i></button>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="printrowshere">
+                         <%
+                         var ttl=0;
+                        for(i=0;i<orderDishes.length;i++)
+                        {
+                            ttl+=Number(orderDishes[i].dish_total);
+                            %>
+                            <tr>
+                                <td><%=orderDishes[i].dish_name%></td>
+                                <td>&#8377; <%=orderDishes[i].dish_price%> /-</td>
+                                <td><%=orderDishes[i].dish_qty%></td>
+                                <td>&#8377; <%=orderDishes[i].dish_total%> /-</td>
+                                <td><button class="btn btn-danger" type="button" onclick="removeDish('<%=orderDishes[i].order_dishes_id%>',this)"><i class="fa fa-close"></i></button></td>
+                            </tr>
+                            <%
+                        }
+                        %> 
+                        <tr class="bg-warning">
+                            <th colspan="3"></th>
+                            <th><h3>&#8377; <%=ttl%></h3></th>
+                            <th></th>
+                        </tr>
+                    </tbody>
+                </table>
+            </Div>
+        </div>
+    </div>
+</form>
+
+<!-- modal  -->
+
+<form action="/admin/savebill" method="post">
+    <div class="tab-content rounded-bottom">
+      <div class="tab-pane p-3 active preview" role="tabpanel" id="preview-339">
+        <div class="modal fade" id="exampleModalLong" tabindex="-1" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                <button class="btn-close" type="button" data-coreui-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <div class="container-fluid">
+                      <div class="row">
+                          <div class="col-6 mb-2">
+                              <b>Total Amount</b>
+                          </div>
+                          <div class="col-6 mb-2">
+                              <input type="text" name="order_amt" id="order_amt" class="form-control" value="<%=ttl%>" readonly>
+                          </div>
+                          <div class="col-6 mb-2">
+                              <b>Received Amount</b>
+                          </div>
+                           <div class="col-6 mb-2">
+                              <input type="text" name="paid_amt" id="paid_amt" 
+                              class="form-control" value="<%=ttl%>" onkeyup="pending_amt.value=order_amt.value-this.value;">
+                          </div>
+                          <div class="col-6 mb-2">
+                              <b>Pending Amount</b>
+                          </div>
+                          <div class="col-6 mb-2">
+                              <input type="text" name="pending_amt" id="pending_amt" class="form-control" value="0">
+                          </div>
+                      </div>
+                      <input type="hidden" name="hotel_table_id" id="table_id" value="<%=table_info[0]['hotel_table_id']%>">
+                  </div>
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-coreui-dismiss="modal">Close</button>
+                <button class="btn btn-primary" type="submit">Save changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+</form>
+
+
+<script>
+    function get_dish_rate()
+    {
+        var did=$("#dish_id").val();
+        // alert(did);
+        $.ajax({
+            url:'/admin/get_price_by_ajax',
+            type:'POST',
+            data:{dish_id:did},
+            dataType:'json',
+        })
+        .done(function(res)
+        {
+            $("#dish_rate").val(res[0].dish_price);
+            if(Number($("#dish_qty").val())==0)
+            {
+                $("#dish_qty").val("1");
+            }
+
+            getTotal();
+        });
+    }
+    function getTotal()
+    {
+        var rate=$("#dish_rate").val();
+        var qty=$("#dish_qty").val();
+            
+         $("#dish_total").val(rate*qty);
+    }
+
+
+// remove dish
+
+function removeDish(dish_id,elmt)
+{
+    $.ajax({
+        url:'/admin/removedish_by_ajax',
+        type:'POST',
+        data:{dish_id: dish_id},
+        dataType:'json',
+    })
+    .done(function(res)
+    {
+        getOrderDishes("<%=table_info[0]['hotel_table_id']%>");
+        getOrderDishes();
+        elmt.closest('tr').remove();
+        console.log(res);
+    });
+}
+
+
+function getOrderDishes(table_id)
+{
+    $.ajax({
+        url:'/admin/getOrderDishes_by_ajax',
+        type:'POST',
+        data:{'hotel_table_id': table_id},
+        dataType: 'json',
+    })
+    .done(function(res)
+    {
+        // alert(res.status);
+        console.log(res.order_dishes);
+        var rows=``;
+        var ttl=0;
+        for(i=0;i<res.order_dishes.length;i++)
+        { 
+            ttl+=Number(res.order_dishes[i].dish_total);                                                                                      
+            rows+=`
+                            <tr>
+                                <td>${res.order_dishes[i].dish_name}</td>
+                                <td>&#8377; ${res.order_dishes[i].dish_price} /-</td>
+                                <td>${res.order_dishes[i].dish_qty}</td>
+                                <td>&#8377; ${res.order_dishes[i].dish_total} /-</td>
+                                <td><button class="btn btn-danger" type="button" onclick="removeDish('${res.order_dishes[i].order_dishes_id}',this)">
+                                    <i class="fa fa-close"></i></button>
+                                </td>
+                            </tr>
+            `;
+        }
+        rows+= `
+                        <tr class="bg-warning">
+                            <th colspan="3"></th>
+                            <th><h3>&#8377; ${ttl}</th></h3>
+                        </tr>`;
+                        $("#order_amt").val(ttl);
+                        $("#paid_amt").val(ttl);
+        $("#printrowshere").html(rows);
+    })
+}
+
+
+function setFocus(elmt)
+                {
+                    setTimeout(function(){
+                        elmt.focus();
+                    },500)
+                }
+</script>
+<script>
+    function submitform(e,addform)
+    {
+        e.preventDefault(0);
+        var did=$("#dish_id").val();
+        var drate=$("#dish_rate").val();
+        var dqty=$("#dish_qty").val();
+        var dtotal=$("#dish_total").val();
+        var table_id=$("#hotel_table_id").val();
+
+        $.ajax({
+            url:'/admin/saveorder',
+            type:'POST',
+            data:{'dish_id':did,'dish_rate':drate,'dish_qty':dqty,'dish_total':dtotal,'hotel_table_id':table_id},
+            dataType:'json'
+        })
+        .done(function(res)
+        {
+            // alert(res.status);
+            getOrderDishes("<%=table_info[0]['hotel_table_id']%>");
+            addform.reset();
+        });
+    }
+</script>
+
+
+
+<%-include('footer.ejs')%>
